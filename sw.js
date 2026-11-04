@@ -1,5 +1,6 @@
-/* MichiFit v2 · service worker: funciona sin internet y se actualiza al publicar una version nueva */
-var VERSION = 'michifit-v2-2026-11-02';
+/* Solo borra cachés de su propio ambiente: QA y producción comparten dominio.
+   MichiFit v3.1 (prod) · service worker: funciona sin internet y se actualiza al publicar una version nueva */
+var VERSION = 'michifit-prod-v3-1-2026-11-04';
 var BASE = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', function (e) {
@@ -8,7 +9,7 @@ self.addEventListener('install', function (e) {
 
 self.addEventListener('activate', function (e) {
   e.waitUntil(caches.keys().then(function (keys) {
-    return Promise.all(keys.filter(function (k) { return k !== VERSION; }).map(function (k) { return caches.delete(k); }));
+    return Promise.all(keys.filter(function (k) { return k !== VERSION && k.indexOf('michifit-') === 0 && k.indexOf('michifit-qa-') !== 0; }).map(function (k) { return caches.delete(k); }));
   }).then(function () { return self.clients.claim(); }));
 });
 
